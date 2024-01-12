@@ -1,17 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SerratedSharp.SerratedJQ" Version="0.0.3" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.3" />
-  </ItemGroup>
-  
-  <Import Project=".\Build.props" />
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Uno.Foundation.Runtime.WebAssembly" Version="5.0.48" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.4" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.4" />
+		<PackageReference Include="SerratedSharp.JSInteropHelpers" Version="0.1.2" />
+		<PackageReference Include="SerratedSharp.SerratedJQ" Version="0.1.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\GettingStarted.WasmShared\GettingStarted.WasmShared.csproj" />
+	</ItemGroup>
+
+	<!-- Setup: WASM Configuration -->
+	<PropertyGroup>
+		<!-- Required if you implement your own .NET JS interopt(i.e. [JSImport] attributes used by introp libraries) -->
+		<!--<AllowUnsafeBlocks>true</AllowUnsafeBlocks>-->
+		
+		<WasmShellMode>BrowserEmbedded</WasmShellMode>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<!-- Required values to support debugging breakpoints in WASM.  -->
+
+		<!-- Enable debugging.  Currently decreases performance significantly!-->
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		
+		<!-- IL Linker Trimming must be disabled to support breakpoints. -->
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+
+		<!--WasmShellEnableThreads must be false to allow breakpoints. 
+			It's default is false, but a reminder in case you set to true it will break debugging.
+			Note: async/promises interopt support still works even if set to false. -->
+		<!--<WasmShellEnableThreads>false</WasmShellEnableThreads>-->
+	</PropertyGroup>
+
+	<!-- Build script that copies WASM distribution into MVC project. -->
+	<!--<Import Project=".\CopyWasmPackage.props" />-->
 
 </Project>
